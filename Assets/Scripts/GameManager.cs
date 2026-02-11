@@ -3,6 +3,7 @@ using SuperSpinner.Services;
 using System;
 using System.Threading.Tasks;
 using UnityEngine;
+using UniRx;
 
 namespace SuperSpinner
 {
@@ -10,6 +11,7 @@ namespace SuperSpinner
     {
         private static TaskCompletionSource<bool> _initSource = new TaskCompletionSource<bool>();
         public static Task<bool> InitTask => _initSource.Task;
+        public static readonly ReactiveProperty<SpinnerData> SpinnerValues = new ReactiveProperty<SpinnerData>();
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static async void LoadData()
@@ -22,10 +24,10 @@ namespace SuperSpinner
                 {
                     Debug.Log($"Successfully loaded {data.spinnerValues.Length} values.");
                     _initSource.SetResult(true);
-                    // Do something with the data here
-
+                    SpinnerValues.Value = data;
                 }
-                else                 {
+                else 
+                {
                     Debug.LogError("No spinner values found in the response.");
                     _initSource.SetResult(false);
                 }

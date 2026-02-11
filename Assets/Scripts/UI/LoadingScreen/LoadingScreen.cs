@@ -5,19 +5,19 @@ namespace SuperSpinner.UI
 {
     public class LoadingScreen: MonoBehaviour
     {
-        private CanvasGroup fadeGroup;
+        private CanvasGroup _fadeGroup;
 
         private void Start()
         {
-            fadeGroup = GetComponent<CanvasGroup>();
-            fadeGroup.alpha = 1;
+            _fadeGroup = GetComponent<CanvasGroup>();
+            _fadeGroup.alpha = 1;
         }
 
         public async Task FadeOutUI()
         {
-            while (fadeGroup.alpha > 0)
+            while (_fadeGroup.alpha > 0)
             {
-                fadeGroup.alpha -= Time.deltaTime * 2;
+                _fadeGroup.alpha -= Time.deltaTime * 2;
                 await Task.Yield();
             }
         }
