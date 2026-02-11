@@ -45,5 +45,35 @@ namespace SuperSpinner.Services
                 }
             }
         }
+
+        public static async Task<SpinnerResult> GetSpinnerResult()
+        {
+            _cachedUrl = await GetApiUrlAsync();
+
+            if (string.IsNullOrEmpty(_cachedUrl))
+            {
+                Debug.LogError("API URL cound not be found.");
+                return null;
+            }
+
+            using (UnityWebRequest request = UnityWebRequest.PostWwwForm($"{_cachedUrl}spinner/spin", string.Empty))
+            {
+                var operation = request.SendWebRequest();
+
+                while (!operation.isDone)
+                    await Task.Yield();
+
+                if (request.result == UnityWebRequest.Result.Success)
+                {
+                    string json = request.downloadHandler.text;
+                    return JsonUtility.FromJson<SpinnerResult>(json);
+                }
+                else
+                {
+                    Debug.LogError($"Network Error: {request.error}");
+                    return null;
+                }
+            }
+        }
     }
 }
