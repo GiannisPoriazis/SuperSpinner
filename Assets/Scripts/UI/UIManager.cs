@@ -7,8 +7,8 @@ namespace SuperSpinner.UI
     public class UIManager: MonoBehaviour
     {
         private LoadingScreen _loadingScreen;
-        private const string UI_LOADING_SCREEN_SCENE = "Loading Screen";
-        private const string UI_SPINNER_SCREEN_SCENE = "Spinner Screen";
+        private const string UI_LOADING_SCREEN_SCENE = "Loading";
+        private const string UI_SPINNER_SCREEN_SCENE = "Spinner";
 
         private async void Start()
         {

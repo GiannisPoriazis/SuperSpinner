@@ -5,7 +5,7 @@ namespace SuperSpinner.UI
 {
     public static class UIBootstrap
     {
-        private const string UI_LOADING_SCREEN_SCENE = "Loading Screen";
+        private const string UI_LOADING_SCREEN_SCENE = "Loading";
 
         /// <summary>
         /// Loads the UI loading screen scene additively before any other scene is loaded, if it is not already present.

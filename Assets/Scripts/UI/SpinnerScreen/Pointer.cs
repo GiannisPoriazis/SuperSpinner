@@ -22,6 +22,7 @@ namespace SuperSpinner.UI
             if (_spinnerReel == null)
             {
                 Debug.LogError("SpinnerReel not assigned to Pointer!");
+                ErrorHandler.Instance.TriggerError("Missconfiguration Error.");
                 return;
             }
 

@@ -2,7 +2,6 @@
 using SuperSpinner.Models;
 using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.Networking;
 
 namespace SuperSpinner.Services
 {
@@ -10,6 +9,22 @@ namespace SuperSpinner.Services
     {
         private string _cachedUrl;
         private const int REQUEST_TIMEOUT = 10;
+        private IWebRequestHandler _webRequestHandler;
+
+        protected override void Awake()
+        {
+            base.Awake();
+            _webRequestHandler = new UnityWebRequestHandler();
+        }
+
+        /// <summary>
+        /// Sets a custom web request handler for testing purposes.
+        /// </summary>
+        /// <param name="handler">The web request handler to use.</param>
+        public void SetWebRequestHandler(IWebRequestHandler handler)
+        {
+            _webRequestHandler = handler;
+        }
 
         private async Task<string> GetApiUrlAsync()
         {
@@ -35,25 +50,21 @@ namespace SuperSpinner.Services
                 return null;
             }
 
-            using (UnityWebRequest request = UnityWebRequest.Get($"{apiUrl}spinner/values"))
+            try
             {
-                request.timeout = REQUEST_TIMEOUT;
+                string json = await _webRequestHandler.GetAsync($"{apiUrl}spinner/values", REQUEST_TIMEOUT);
 
-                var operation = request.SendWebRequest();
-
-                while (!operation.isDone)
-                    await Task.Yield();
-
-                if (request.result == UnityWebRequest.Result.Success)
+                if (!string.IsNullOrEmpty(json))
                 {
-                    string json = request.downloadHandler.text;
                     return JsonUtility.FromJson<SpinnerData>(json);
                 }
-                else
-                {
-                    Debug.LogError($"Network Error: {request.error}");
-                    return null;
-                }
+
+                return null;
+            }
+            catch(System.Exception ex) 
+            { 
+                Debug.LogError($"Error fetching spinner values: {ex.Message}"); 
+                return null; 
             }
         }
 
@@ -71,25 +82,21 @@ namespace SuperSpinner.Services
                 return null;
             }
 
-            using (UnityWebRequest request = UnityWebRequest.PostWwwForm($"{apiUrl}spinner/spin", string.Empty))
+            try
             {
-                request.timeout = REQUEST_TIMEOUT;
+                string json = await _webRequestHandler.PostAsync($"{apiUrl}spinner/spin", REQUEST_TIMEOUT);
 
-                var operation = request.SendWebRequest();
-
-                while (!operation.isDone)
-                    await Task.Yield();
-
-                if (request.result == UnityWebRequest.Result.Success)
+                if (!string.IsNullOrEmpty(json))
                 {
-                    string json = request.downloadHandler.text;
                     return JsonUtility.FromJson<SpinnerResult>(json);
                 }
-                else
-                {
-                    Debug.LogError($"Network Error: {request.error}");
-                    return null;
-                }
+
+                return null;
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogError($"Error fetching spinner result: {ex.Message}"); 
+                return null;
             }
         }
     }

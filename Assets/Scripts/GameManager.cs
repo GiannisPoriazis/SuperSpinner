@@ -29,12 +29,14 @@ namespace SuperSpinner
                 else 
                 {
                     Debug.LogError("No spinner values found in the response.");
+                    ErrorHandler.Instance.TriggerError("Network request failed. Please try again later.");
                     _initSource.SetResult(false);
                 }
             }
             catch (Exception e)
             {
                 Debug.LogError($"Error while loading spinner values: {e.Message}");
+                ErrorHandler.Instance.TriggerError("Network request failed. Please try again later.");
                 _initSource.SetResult(false);
             }
         }

@@ -1,0 +1,26 @@
+{
+"name": "SuperSpinner.Tests.EditMode",
+"rootNamespace": "SuperSpinner.Tests",
+"references": [
+    "UnityEngine.TestRunner",
+    "UnityEditor.TestRunner",
+    "SuperSpinner",
+    "UniRx",
+    "DOTween.Modules"
+],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
