@@ -18,7 +18,7 @@ namespace SuperSpinner
         {
             try
             {
-                var data = await SpinnerService.GetSpinnerValues();
+                var data = await SpinnerService.Instance.GetSpinnerValues();
 
                 if (data != null && data.spinnerValues.Length > 0)
                 {

@@ -1,4 +1,5 @@
 ﻿using DG.Tweening;
+using SuperSpinner.Audio;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -17,6 +18,7 @@ namespace SuperSpinner.UI
         private int _totalItems;
         private List<long> _values;
         private float _durationPerLoop = 0.5f;
+        private float _lastClickY;
         private const string PREFAB_PATH = "SpinnerValue";
 
         [HideInInspector] public BoolReactiveProperty IsSpinning = new BoolReactiveProperty(false);
@@ -45,8 +47,25 @@ namespace SuperSpinner.UI
             }
 
             _wheelTransform.anchoredPosition = new Vector2(0, _totalItems * _itemHeight);
+            _lastClickY = _wheelTransform.anchoredPosition.y;
         }
 
+        private void Update()
+        {
+            float currentY = _wheelTransform.anchoredPosition.y;
+            if (Mathf.Abs(currentY - _lastClickY) >= _itemHeight)
+            {
+                AudioManager.Instance.PlayClickSound();
+                _lastClickY = currentY;
+            }
+        }
+
+        /// <summary>
+        /// Animates the spinner reel to spin through multiple loops before landing on the winning value.
+        /// The reel performs a random number of full spins (4-7) before decelerating to the final prize position.
+        /// </summary>
+        /// <param name="winningValue">The prize value that the spinner should land on.</param>
+        /// <returns>A task that completes when the spin animation finishes.</returns>
         public async Task SpinToPrizeAsync(long winningValue)
         {
             IsSpinning.Value = true;

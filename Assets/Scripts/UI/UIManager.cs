@@ -23,12 +23,23 @@ namespace SuperSpinner.UI
             }
         }
 
+        /// <summary>
+        /// Handles the scene transition after data is successfully loaded.
+        ///  Loads the spinner screen, fades out and unloads the loading screen.
+        /// </summary>
+        /// <returns>A task that completes when all scene transitions are finished.</returns>
         private async Task OnDataLoadedAsync()
         {
+            var loadScene = SceneManager.LoadSceneAsync(UI_SPINNER_SCREEN_SCENE, LoadSceneMode.Additive);
+
+            while (!loadScene.isDone)
+            {
+                await Task.Yield();
+            }
+
             await _loadingScreen.FadeOutUI();
-            await SceneManager.LoadSceneAsync(UI_SPINNER_SCREEN_SCENE, LoadSceneMode.Additive);
             await SceneManager.UnloadSceneAsync(UI_LOADING_SCREEN_SCENE);
-            Destroy(_loadingScreen);
+            if (_loadingScreen != null) Destroy(_loadingScreen.gameObject);
         }
     }
 }

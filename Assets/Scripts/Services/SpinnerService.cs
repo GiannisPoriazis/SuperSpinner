@@ -6,28 +6,39 @@ using UnityEngine.Networking;
 
 namespace SuperSpinner.Services
 {
-    public static class SpinnerService
+    public class SpinnerService : Singleton<SpinnerService>, ISpinnerService
     {
-        private static string _cachedUrl;
+        private string _cachedUrl;
+        private const int REQUEST_TIMEOUT = 10;
 
-        private static async Task<string> GetApiUrlAsync()
+        private async Task<string> GetApiUrlAsync()
         {
+            if (!string.IsNullOrEmpty(_cachedUrl))
+                return _cachedUrl;
+
             var config = Resources.Load<Configuration>("Configuration");
-            return config != null ? config.apiUrl : null;
+            _cachedUrl = config != null ? config.apiUrl : null;
+            return _cachedUrl;
         }
 
-        public static async Task<SpinnerData> GetSpinnerValues()
+        /// <summary>
+        /// Retrieves the available spinner values from the server.
+        /// </summary>
+        /// <returns>A task containing the spinner data with all available prize values, or null if the request fails.</returns>
+        public async Task<SpinnerData> GetSpinnerValues()
         {
-            _cachedUrl = await GetApiUrlAsync();
+            string apiUrl = await GetApiUrlAsync();
 
-            if (string.IsNullOrEmpty(_cachedUrl))
+            if (string.IsNullOrEmpty(apiUrl))
             {
-                Debug.LogError("API URL cound not be found.");
+                Debug.LogError("API URL could not be found.");
                 return null;
             }
 
-            using (UnityWebRequest request = UnityWebRequest.Get($"{_cachedUrl}spinner/values"))
+            using (UnityWebRequest request = UnityWebRequest.Get($"{apiUrl}spinner/values"))
             {
+                request.timeout = REQUEST_TIMEOUT;
+
                 var operation = request.SendWebRequest();
 
                 while (!operation.isDone)
@@ -46,18 +57,24 @@ namespace SuperSpinner.Services
             }
         }
 
-        public static async Task<SpinnerResult> GetSpinnerResult()
+        /// <summary>
+        /// Requests a spin result from the server.
+        /// </summary>
+        /// <returns>A task containing the spin result with the awarded prize value, or null if the request fails.</returns>
+        public async Task<SpinnerResult> GetSpinnerResult()
         {
-            _cachedUrl = await GetApiUrlAsync();
+            string apiUrl = await GetApiUrlAsync();
 
-            if (string.IsNullOrEmpty(_cachedUrl))
+            if (string.IsNullOrEmpty(apiUrl))
             {
-                Debug.LogError("API URL cound not be found.");
+                Debug.LogError("API URL could not be found.");
                 return null;
             }
 
-            using (UnityWebRequest request = UnityWebRequest.PostWwwForm($"{_cachedUrl}spinner/spin", string.Empty))
+            using (UnityWebRequest request = UnityWebRequest.PostWwwForm($"{apiUrl}spinner/spin", string.Empty))
             {
+                request.timeout = REQUEST_TIMEOUT;
+
                 var operation = request.SendWebRequest();
 
                 while (!operation.isDone)

@@ -9,6 +9,8 @@ namespace SuperSpinner.UI
         public float duration = 0.05f;
         public float strength = 20f;
 
+        [SerializeField] private SpinnerReel _spinnerReel;
+
         private RectTransform _pointer;
         private ParticleSystem _sparkEffect;
 
@@ -16,9 +18,15 @@ namespace SuperSpinner.UI
         {
             _sparkEffect = GetComponentInChildren<ParticleSystem>();
             _pointer = GetComponent<RectTransform>();
-            SpinnerReel wheel = FindFirstObjectByType<SpinnerReel>();
 
-            wheel.IsSpinning
+            if (_spinnerReel == null)
+            {
+                Debug.LogError("SpinnerReel not assigned to Pointer!");
+                return;
+            }
+
+            _spinnerReel.IsSpinning
+                .DistinctUntilChanged() 
                 .Subscribe(spinning =>
                 {
                     if (spinning)
@@ -29,17 +37,29 @@ namespace SuperSpinner.UI
                 .AddTo(this);
         }
 
+        /// <summary>
+        /// Starts the jitter animation effect on the pointer and plays the spark particle effect.
+        /// The pointer will oscillate back and forth to simulate vibration while the spinner is active.
+        /// </summary>
         public void StartJitter()
         {
-            _sparkEffect.Play();
+            if (_sparkEffect != null)
+                _sparkEffect.Play();
+                
             _pointer.DOLocalRotate(new Vector3(0, 0, strength), duration)
                 .SetEase(Ease.InOutSine)
                 .SetLoops(-1, LoopType.Yoyo);
         }
 
+        /// <summary>
+        /// Stops the jitter animation effect on the pointer and stops the spark particle effect.
+        /// Resets the pointer rotation to its default position.
+        /// </summary>
         public void StopJitter()
         {
-            _sparkEffect.Stop();
+            if (_sparkEffect != null)
+                _sparkEffect.Stop();
+                
             _pointer.DOKill();
             _pointer.localRotation = Quaternion.identity;
         }
