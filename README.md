@@ -69,27 +69,6 @@ Assets/
 4. Configure API URL in `Resources/Configuration`
 5. Run tests to verify setup
 
-## 📦 Pre-Built Releases
-
-Ready-to-run builds are available in the `Build/` folder:
-
-### **Desktop Build** (`Build/Desktop/`)
-- **Platform**: Windows (x64)
-- **Executable**: `Super Spinner.exe`
-- **Requirements**: Windows 10/11
-- **Usage**: Run `Super Spinner.exe` to play on PC
-
-### **Mobile Build** (`Build/Mobile/`)
-- **Platform**: Android
-- **File**: `SuperSpinner.apk`
-- **Requirements**: Android 5.0+ (API Level 21+)
-- **Installation**: 
-  1. Transfer `.apk` to your Android device
-  2. Enable "Install from Unknown Sources" in Settings
-  3. Install and run the app
-
-> **Note**: Debug information folders (`*_BurstDebugInformation_DoNotShip`, `*_BackUpThisFolder_ButDontShipItWithYourGame`) should not be distributed with final releases.
-
 ## 🌐 API Integration
 The game connects to a backend API for:
 - Fetching spinner prize values
