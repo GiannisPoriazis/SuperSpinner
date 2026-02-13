@@ -47,6 +47,7 @@ namespace SuperSpinner.Services
             if (string.IsNullOrEmpty(apiUrl))
             {
                 Debug.LogError("API URL could not be found.");
+                ErrorHandler.Instance.TriggerError("Network related error. Please try again later.");
                 return null;
             }
 
@@ -59,11 +60,13 @@ namespace SuperSpinner.Services
                     return JsonUtility.FromJson<SpinnerData>(json);
                 }
 
+                ErrorHandler.Instance.TriggerError("Network related error. Please try again later.");
                 return null;
             }
             catch(System.Exception ex) 
             { 
-                Debug.LogError($"Error fetching spinner values: {ex.Message}"); 
+                Debug.LogError($"Error fetching spinner values: {ex.Message}");
+                ErrorHandler.Instance.TriggerError("Network related error. Please try again later.");
                 return null; 
             }
         }
@@ -79,6 +82,7 @@ namespace SuperSpinner.Services
             if (string.IsNullOrEmpty(apiUrl))
             {
                 Debug.LogError("API URL could not be found.");
+                ErrorHandler.Instance.TriggerError("Network related error. Please try again later.");
                 return null;
             }
 
@@ -91,11 +95,13 @@ namespace SuperSpinner.Services
                     return JsonUtility.FromJson<SpinnerResult>(json);
                 }
 
+                ErrorHandler.Instance.TriggerError("Network related error. Please try again later.");
                 return null;
             }
             catch (System.Exception ex)
             {
                 Debug.LogError($"Error fetching spinner result: {ex.Message}"); 
+                ErrorHandler.Instance.TriggerError("Network related error. Please try again later.");
                 return null;
             }
         }
